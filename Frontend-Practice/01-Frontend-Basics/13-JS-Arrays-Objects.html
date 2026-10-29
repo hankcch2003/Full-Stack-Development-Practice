@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 陣列與物件練習</title>
+</head>
+<body>
+    <h1>JavaScript 陣列與物件練習</h1>
+    <p>請按 F12 開啟開發者工具，查看 Console 輸出。</p>
+
+    <script>
+        // 一、建立陣列
+        const books = ["C#", "JavaScript", "SQL Server"];
+
+        console.log("=== 書籍清單 ===");
+        console.log(books);
+
+        // 二、使用索引取得陣列元素，索引從 0 開始
+        console.log("第一本書：" + books[0]);
+        console.log("第二本書：" + books[1]);
+
+        // 三、取得陣列長度
+        console.log("書籍數量：" + books.length);
+
+        // 四、新增與刪除陣列元素
+        books.push("HTML");
+        console.log("新增後：" + books);
+
+        books.pop();
+        console.log("刪除最後一筆後：" + books);
+
+        // 五、使用 forEach 逐一處理陣列元素
+        console.log("=== 逐一列出書籍 ===");
+
+        books.forEach(function (book, index) {
+            console.log((index + 1) + ". " + book);
+        });
+
+        // 六、使用 map 建立新陣列
+        const bookLabels = books.map(function (book) {
+            return "書名：" + book;
+        });
+
+        console.log("=== map 結果 ===");
+        console.log(bookLabels);
+
+        // 七、使用 filter 篩選資料
+        const prices = [150, 300, 450, 600];
+        const expensiveBooks = prices.filter(function (price) {
+            return price >= 400;
+        });
+
+        console.log("=== 篩選價格 ===");
+        console.log(expensiveBooks);
+
+        // 八、建立物件
+        const book = {
+            id: 1,
+            title: "C# 入門教學",
+            author: "王小明",
+            price: 350,
+            available: true
+        };
+
+        console.log("=== 書籍物件 ===");
+        console.log(book);
+
+        // 九、讀取物件屬性
+        console.log("書名：" + book.title);
+        console.log("作者：" + book.author);
+        console.log("價格：" + book.price);
+
+        // 十、修改物件屬性
+        book.price = 400;
+        console.log("修改後價格：" + book.price);
+
+        // 十一、新增與刪除物件屬性
+        book.category = "程式設計";
+        console.log("新增分類：" + book.category);
+
+        delete book.available;
+        console.log("刪除 available 後：");
+        console.log(book);
+
+        // 十二、建立物件陣列
+        const bookList = [
+            { id: 1, title: "C#", price: 350 },
+            { id: 2, title: "JavaScript", price: 450 },
+            { id: 3, title: "SQL Server", price: 550 }
+        ];
+
+        console.log("=== 物件陣列 ===");
+
+        bookList.forEach(function (item) {
+            console.log(item.id + ". " + item.title + "，價格：" + item.price);
+        });
+
+        // 十三、從物件陣列中篩選價格
+        const filteredBooks = bookList.filter(function (item) {
+            return item.price >= 400;
+        });
+
+        console.log("=== 價格 400 以上的書籍 ===");
+        console.log(filteredBooks);
+    </script>
+</body>
+</html>

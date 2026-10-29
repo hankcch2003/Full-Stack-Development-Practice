@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CSS Flexbox 練習</title>
+
+    <style>
+        /* 設定整個頁面的基本樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        /* Flexbox 容器：子元素預設水平排列 */
+        .flex-container {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background-color: #dddddd;
+            border: 2px solid #999999;
+        }
+
+        /* 設定每個子元素的外觀 */
+        .flex-item {
+            background-color: lightblue;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid steelblue;
+        }
+
+        /* 讓子元素平均分配可用空間 */
+        .equal-item {
+            flex: 1;
+        }
+
+        /* 使用不同的排列方向 */
+        .column-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            background-color: #eeeeee;
+        }
+
+        .column-item {
+            background-color: lightgreen;
+            padding: 15px;
+        }
+
+        /* 將子元素排列到容器的主軸中央 */
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            min-height: 150px;
+            background-color: #fff2cc;
+        }
+
+        .center-item {
+            background-color: orange;
+            padding: 15px;
+        }
+
+        /* 將子元素分散排列在容器兩端 */
+        .space-between-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #e8d5f5;
+        }
+
+        .nav-item {
+            background-color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Flexbox 練習</h1>
+
+    <h2>一、水平排列</h2>
+    <p>display: flex 會讓子元素沿主軸排列，預設為水平排列。</p>
+
+    <div class="flex-container">
+        <div class="flex-item">區塊 A</div>
+        <div class="flex-item">區塊 B</div>
+        <div class="flex-item">區塊 C</div>
+    </div>
+
+    <h2>二、平均分配空間</h2>
+    <p>flex: 1 讓這三個區塊平均分配可用空間。</p>
+
+    <div class="flex-container">
+        <div class="flex-item equal-item">區塊 A</div>
+        <div class="flex-item equal-item">區塊 B</div>
+        <div class="flex-item equal-item">區塊 C</div>
+    </div>
+
+    <h2>三、垂直排列</h2>
+    <p>flex-direction: column 會讓子元素由上而下排列。</p>
+
+    <div class="column-container">
+        <div class="column-item">第一個項目</div>
+        <div class="column-item">第二個項目</div>
+        <div class="column-item">第三個項目</div>
+    </div>
+
+    <h2>四、水平與垂直置中</h2>
+    <p>justify-content 控制主軸排列，align-items 控制交叉軸排列。</p>
+
+    <div class="center-container">
+        <div class="center-item">置中 A</div>
+        <div class="center-item">置中 B</div>
+        <div class="center-item">置中 C</div>
+    </div>
+
+    <h2>五、分散排列</h2>
+    <p>justify-content: space-between 會將項目分散在主軸上。</p>
+
+    <div class="space-between-container">
+        <div class="nav-item">首頁</div>
+        <div class="nav-item">書籍管理</div>
+        <div class="nav-item">聯絡我們</div>
+    </div>
+</body>
+</html>

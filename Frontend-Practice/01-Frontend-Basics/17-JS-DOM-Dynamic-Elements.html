@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DOM 動態新增與刪除元素練習</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            margin: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 24px;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        input {
+            width: 65%;
+            max-width: 350px;
+            padding: 9px;
+            margin: 6px 0;
+        }
+
+        button {
+            padding: 9px 14px;
+            margin: 4px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2878c8;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #185a96;
+        }
+
+        .delete-button {
+            background-color: #c62828;
+        }
+
+        .delete-button:hover {
+            background-color: #991b1b;
+        }
+
+        .book-list {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .book-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 12px;
+            background-color: #eef5ff;
+            border-radius: 6px;
+        }
+
+        .empty-message {
+            color: #666;
+        }
+
+        .status {
+            padding: 10px;
+            background-color: #eef5ff;
+            border-radius: 5px;
+        }
+
+        .book-name {
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript DOM 動態新增與刪除元素練習</h1>
+        <p>練習使用 JavaScript 動態管理圖書清單。</p>
+
+        <section>
+            <h2>新增圖書</h2>
+
+            <label for="bookTitle">圖書名稱：</label><br>
+            <input
+                type="text"
+                id="bookTitle"
+                placeholder="例如：JavaScript 入門"
+            >
+            <button type="button" id="addButton">新增圖書</button>
+
+            <p id="statusMessage" class="status">請輸入圖書名稱。</p>
+        </section>
+
+        <section>
+            <h2>圖書清單</h2>
+            <p>目前圖書數量：<span id="bookCount">3</span></p>
+
+            <ul id="bookList" class="book-list">
+                <li class="book-item">
+                    <span class="book-name">C# 程式設計入門</span>
+                    <button type="button" class="delete-button">刪除</button>
+                </li>
+                <li class="book-item">
+                    <span class="book-name">SQL Server 實戰</span>
+                    <button type="button" class="delete-button">刪除</button>
+                </li>
+                <li class="book-item">
+                    <span class="book-name">JavaScript 實戰</span>
+                    <button type="button" class="delete-button">刪除</button>
+                </li>
+            </ul>
+
+            <button type="button" id="clearButton">清空全部圖書</button>
+        </section>
+    </div>
+
+    <script>
+        // 取得頁面元素
+        const bookTitle = document.getElementById("bookTitle");
+        const addButton = document.getElementById("addButton");
+        const bookList = document.getElementById("bookList");
+        const bookCount = document.getElementById("bookCount");
+        const statusMessage = document.getElementById("statusMessage");
+        const clearButton = document.getElementById("clearButton");
+
+        // 根據目前清單內容更新圖書數量
+        function updateBookCount() {
+            bookCount.textContent = bookList.children.length;
+        }
+
+        // 建立一筆圖書清單項目
+        function createBookItem(title) {
+            const listItem = document.createElement("li");
+            listItem.className = "book-item";
+
+            const bookName = document.createElement("span");
+            bookName.className = "book-name";
+            bookName.textContent = title;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "delete-button";
+            deleteButton.textContent = "刪除";
+
+            // 不在這裡綁定刪除事件，統一由 bookList 處理
+            listItem.append(bookName, deleteButton);
+
+            return listItem;
+        }
+
+        // 新增圖書
+        function addBook() {
+            const title = bookTitle.value.trim();
+
+            if (title === "") {
+                statusMessage.textContent = "請先輸入圖書名稱。";
+                bookTitle.focus();
+                return;
+            }
+
+            const listItem = createBookItem(title);
+            bookList.appendChild(listItem);
+
+            updateBookCount();
+
+            statusMessage.textContent = "新增成功：" + title;
+            bookTitle.value = "";
+            bookTitle.focus();
+        }
+
+        // 點擊按鈕新增圖書
+        addButton.addEventListener("click", addBook);
+
+        // 按 Enter 鍵也可以新增圖書
+        bookTitle.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                addBook();
+            }
+        });
+
+        // 事件委派：統一處理原有與新增圖書的刪除操作
+        bookList.addEventListener("click", function (event) {
+            // 確認點擊的元素是刪除按鈕
+            const deleteButton = event.target.closest(".delete-button");
+
+            if (!deleteButton || !bookList.contains(deleteButton)) {
+                return;
+            }
+
+            // 找到按鈕所屬的圖書項目
+            const listItem = deleteButton.closest(".book-item");
+
+            if (!listItem) {
+                return;
+            }
+
+            const bookName = listItem.querySelector(".book-name");
+            const title = bookName.textContent;
+
+            // 只刪除目前點擊的那一本
+            listItem.remove();
+
+            updateBookCount();
+            statusMessage.textContent = "已刪除圖書：" + title;
+        });
+
+        // 清空全部圖書
+        clearButton.addEventListener("click", function () {
+            bookList.replaceChildren();
+            updateBookCount();
+            statusMessage.textContent = "已清空全部圖書。";
+        });
+
+        // 頁面載入後初始化數量
+        updateBookCount();
+    </script>
+</body>
+</html>

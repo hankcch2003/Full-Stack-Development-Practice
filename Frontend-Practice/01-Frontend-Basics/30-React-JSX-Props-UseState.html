@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React 圖書管理</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+            background-color: #f5f7fa;
+            color: #263238;
+        }
+
+        h1 {
+            color: #1565c0;
+        }
+
+        .form-section,
+        .book-card {
+            background-color: white;
+            padding: 18px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid #dce3eb;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 6px 0 12px;
+            border: 1px solid #b0bec5;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 9px 14px;
+            margin: 4px 6px 4px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-button {
+            background-color: #1565c0;
+            color: white;
+        }
+
+        .toggle-button {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .delete-button {
+            background-color: #ffebee;
+            color: #b71c1c;
+        }
+
+        .restore-button {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .status {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .book-card h3 {
+            margin-top: 0;
+        }
+
+        .book-meta {
+            color: #546e7a;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- 載入 React 與 JSX 編譯工具 -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // 子元件：透過 props 接收單本圖書資料與事件函式
+        function BookCard({ book, onToggle, onDelete }) {
+            return (
+                <div className="book-card">
+                    <h3>{book.title}</h3>
+                    <p>作者：{book.author}</p>
+                    <p className="book-meta">
+                        分類：{book.category}
+                    </p>
+                    <p>
+                        狀態：
+                        <strong>
+                            {book.isAvailable ? "可借閱" : "借閱中"}
+                        </strong>
+                    </p>
+
+                    <button
+                        className="toggle-button"
+                        onClick={() => onToggle(book.id)}
+                    >
+                        切換借閱狀態
+                    </button>
+
+                    <button
+                        className="delete-button"
+                        onClick={() => onDelete(book.id)}
+                    >
+                        刪除
+                    </button>
+                </div>
+            );
+        }
+
+        // 父元件：管理圖書清單與表單狀態
+        function App() {
+            const initialBooks = [
+                {
+                    id: 1,
+                    title: "C# 入門教學",
+                    author: "王小明",
+                    category: "程式設計",
+                    isAvailable: true
+                },
+                {
+                    id: 2,
+                    title: "SQL Server 資料庫實務",
+                    author: "陳小華",
+                    category: "資料庫",
+                    isAvailable: false
+                },
+                {
+                    id: 3,
+                    title: "JavaScript 前端開發",
+                    author: "林小美",
+                    category: "前端開發",
+                    isAvailable: true
+                }
+            ];
+
+            const [books, setBooks] = useState(initialBooks);
+            const [title, setTitle] = useState("");
+            const [author, setAuthor] = useState("");
+            const [category, setCategory] = useState("");
+            const [statusMessage, setStatusMessage] = useState(
+                "歡迎使用 React 圖書管理系統。"
+            );
+
+            // 新增圖書：更新狀態後，React 會重新渲染畫面
+            function handleAddBook(event) {
+                event.preventDefault();
+
+                if (!title.trim() || !author.trim() || !category.trim()) {
+                    setStatusMessage("請完整填寫圖書名稱、作者與分類。");
+                    return;
+                }
+
+                const newBook = {
+                    id: Date.now(),
+                    title: title.trim(),
+                    author: author.trim(),
+                    category: category.trim(),
+                    isAvailable: true
+                };
+
+                setBooks(previousBooks => [...previousBooks, newBook]);
+                setTitle("");
+                setAuthor("");
+                setCategory("");
+                setStatusMessage(`已新增圖書：${newBook.title}`);
+            }
+
+            // 切換圖書借閱狀態
+            function handleToggleBook(bookId) {
+                setBooks(previousBooks =>
+                    previousBooks.map(book =>
+                        book.id === bookId
+                            ? { ...book, isAvailable: !book.isAvailable }
+                            : book
+                    )
+                );
+
+                setStatusMessage("已更新圖書借閱狀態。");
+            }
+
+            // 刪除指定圖書
+            function handleDeleteBook(bookId) {
+                const targetBook = books.find(book => book.id === bookId);
+
+                setBooks(previousBooks =>
+                    previousBooks.filter(book => book.id !== bookId)
+                );
+
+                if (targetBook) {
+                    setStatusMessage(`已刪除圖書：${targetBook.title}`);
+                }
+            }
+
+            // 還原初始資料
+            function handleRestoreBooks() {
+                setBooks(initialBooks.map(book => ({ ...book })));
+                setTitle("");
+                setAuthor("");
+                setCategory("");
+                setStatusMessage("已恢復三本範例圖書。");
+            }
+
+            return (
+                <main>
+                    <h1>React 圖書資料管理</h1>
+
+                    <p>
+                        目前圖書數量：
+                        <strong>{books.length}</strong>
+                    </p>
+
+                    <section className="form-section">
+                        <h2>新增圖書</h2>
+
+                        <form onSubmit={handleAddBook}>
+                            <label htmlFor="bookTitle">圖書名稱</label>
+                            <input
+                                id="bookTitle"
+                                type="text"
+                                value={title}
+                                onChange={event => setTitle(event.target.value)}
+                                placeholder="例如：ASP.NET Core 入門"
+                                required
+                            />
+
+                            <label htmlFor="bookAuthor">作者</label>
+                            <input
+                                id="bookAuthor"
+                                type="text"
+                                value={author}
+                                onChange={event => setAuthor(event.target.value)}
+                                placeholder="請輸入作者"
+                                required
+                            />
+
+                            <label htmlFor="bookCategory">分類</label>
+                            <input
+                                id="bookCategory"
+                                type="text"
+                                value={category}
+                                onChange={event => setCategory(event.target.value)}
+                                placeholder="例如：後端開發"
+                                required
+                            />
+
+                            <button className="add-button" type="submit">
+                                新增圖書
+                            </button>
+                        </form>
+
+                        <button
+                            className="restore-button"
+                            type="button"
+                            onClick={handleRestoreBooks}
+                        >
+                            還原範例資料
+                        </button>
+
+                        <p className="status" aria-live="polite">
+                            {statusMessage}
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>圖書清單</h2>
+
+                        {books.length === 0 ? (
+                            <p>目前沒有圖書，請新增圖書或還原範例資料。</p>
+                        ) : (
+                            <div className="book-list">
+                                {books.map(book => (
+                                    <BookCard
+                                        key={book.id}
+                                        book={book}
+                                        onToggle={handleToggleBook}
+                                        onDelete={handleDeleteBook}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                </main>
+            );
+        }
+
+        // 建立 React 根節點並顯示父元件
+        const root = ReactDOM.createRoot(
+            document.getElementById("root")
+        );
+
+        root.render(<App />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWD 響應式圖書管理介面</title>
+
+    <!-- 載入 Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+
+        .page-title {
+            font-weight: 700;
+        }
+
+        /* 平板與手機使用較小的封面高度 */
+        @media (max-width: 767.98px) {
+            .book-cover {
+                height: 140px;
+            }
+
+            .page-heading {
+                align-items: stretch !important;
+            }
+
+            .page-heading .btn {
+                width: 100%;
+            }
+        }
+
+        /* 小型手機進一步縮小留白 */
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Book Manager</a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="切換導覽列"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">儀表板</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#books">圖書清單</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">關於系統</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4 main-content">
+
+        <!-- 頁面標題 -->
+        <section
+            id="dashboard"
+            class="d-flex justify-content-between align-items-center gap-3 flex-wrap page-heading mb-4"
+        >
+            <div>
+                <h1 class="page-title mb-2">圖書管理儀表板</h1>
+                <p class="text-secondary mb-0">
+                    依照不同裝置自動調整版面配置。
+                </p>
+            </div>
+
+            <button id="addBookButton" class="btn btn-primary" type="button">
+                + 新增範例圖書
+            </button>
+        </section>
+
+        <!-- 統計卡片：大螢幕三欄、小螢幕一欄 -->
+        <section class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="card dashboard-card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-secondary mb-2">圖書總數</p>
+                        <h2 id="totalBooks" class="display-6 fw-bold mb-0">4</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card dashboard-card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-secondary mb-2">圖書分類數</p>
+                        <h2 id="totalCategories" class="display-6 fw-bold mb-0">3</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card dashboard-card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-secondary mb-2">最新出版年份</p>
+                        <h2 id="latestYear" class="display-6 fw-bold mb-0">2026</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 圖書卡片區 -->
+        <section id="books" class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h4 mb-0">圖書清單</h2>
+                <span class="text-secondary small">響應式卡片版面</span>
+            </div>
+
+            <div id="bookList" class="row g-3"></div>
+
+            <p id="emptyMessage" class="text-secondary d-none mt-3">
+                目前沒有圖書資料。
+            </p>
+
+            <div
+                id="statusMessage"
+                class="alert d-none mt-3 mb-0"
+                role="status"
+                aria-live="polite"
+            ></div>
+        </section>
+
+        <!-- 系統說明 -->
+        <section id="about" class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h5">關於系統</h2>
+                <p class="mb-0 text-secondary">
+                    本頁使用 HTML、CSS、Bootstrap 與 JavaScript 建立，目前以記憶體中的範例資料示範響應式版面。
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center text-secondary py-4">
+        <small>Book Manager｜RWD 響應式網頁練習</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 範例圖書資料
+        const initialBooks = [
+            {
+                id: 1,
+                title: "C# 程式設計入門",
+                author: "王小明",
+                category: "程式設計",
+                year: 2025
+            },
+            {
+                id: 2,
+                title: "SQL Server 資料庫實務",
+                author: "陳小華",
+                category: "資料庫",
+                year: 2024
+            },
+            {
+                id: 3,
+                title: "HTML 與 CSS 網頁設計",
+                author: "林小美",
+                category: "網頁設計",
+                year: 2023
+            },
+            {
+                id: 4,
+                title: "JavaScript 基礎教學",
+                author: "張小安",
+                category: "程式設計",
+                year: 2026
+            }
+        ];
+
+        let books = initialBooks.map(function (book) {
+            return { ...book };
+        });
+
+        const bookList = document.querySelector("#bookList");
+        const totalBooks = document.querySelector("#totalBooks");
+        const totalCategories = document.querySelector("#totalCategories");
+        const latestYear = document.querySelector("#latestYear");
+        const emptyMessage = document.querySelector("#emptyMessage");
+        const statusMessage = document.querySelector("#statusMessage");
+        const addBookButton = document.querySelector("#addBookButton");
+
+        // 顯示操作結果
+        function showMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className =
+                "alert alert-" + type + " mt-3 mb-0";
+        }
+
+        // 建立文字元素
+        function createTextElement(tagName, className, text) {
+            const element = document.createElement(tagName);
+            element.className = className;
+            element.textContent = text;
+            return element;
+        }
+
+        // 建立單本圖書卡片
+        function createBookCard(book) {
+            const column = document.createElement("div");
+
+            // 手機一欄、平板兩欄、桌面三欄
+            column.className = "col-12 col-sm-6 col-lg-4";
+
+            const card = document.createElement("div");
+            card.className = "card dashboard-card shadow-sm h-100";
+
+            const cardBody = document.createElement("div");
+            cardBody.className = "card-body d-flex flex-column";
+
+            const cover = document.createElement("div");
+            cover.className =
+                "book-cover d-flex justify-content-center align-items-center mb-3";
+
+            cover.appendChild(
+                createTextElement("span", "text-secondary", "BOOK")
+            );
+
+            const title = createTextElement(
+                "h3",
+                "h5 card-title",
+                book.title
+            );
+
+            const author = createTextElement(
+                "p",
+                "text-secondary mb-2",
+                "作者：" + book.author
+            );
+
+            const category = createTextElement(
+                "span",
+                "badge text-bg-primary align-self-start mb-2",
+                book.category
+            );
+
+            const year = createTextElement(
+                "p",
+                "small text-secondary mb-3",
+                "出版年份：" + book.year
+            );
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className =
+                "btn btn-outline-danger btn-sm mt-auto align-self-start";
+            deleteButton.textContent = "刪除圖書";
+            deleteButton.dataset.bookId = book.id;
+
+            cardBody.appendChild(cover);
+            cardBody.appendChild(title);
+            cardBody.appendChild(author);
+            cardBody.appendChild(category);
+            cardBody.appendChild(year);
+            cardBody.appendChild(deleteButton);
+
+            card.appendChild(cardBody);
+            column.appendChild(card);
+
+            return column;
+        }
+
+        // 更新統計卡片
+        function updateStatistics() {
+            totalBooks.textContent = books.length;
+
+            const categories = new Set(
+                books.map(function (book) {
+                    return book.category;
+                })
+            );
+
+            totalCategories.textContent = categories.size;
+
+            const years = books.map(function (book) {
+                return book.year;
+            });
+
+            latestYear.textContent =
+                years.length > 0 ? Math.max(...years) : "—";
+        }
+
+        // 重新顯示所有圖書
+        function renderBooks() {
+            bookList.replaceChildren();
+
+            books.forEach(function (book) {
+                bookList.appendChild(createBookCard(book));
+            });
+
+            updateStatistics();
+            emptyMessage.classList.toggle("d-none", books.length > 0);
+        }
+
+        // 新增範例圖書
+        addBookButton.addEventListener("click", function () {
+            const nextId = books.length > 0
+                ? Math.max(...books.map(function (book) {
+                    return book.id;
+                })) + 1
+                : 1;
+
+            books.push({
+                id: nextId,
+                title: "ASP.NET Core Web API 入門",
+                author: "測試作者",
+                category: "程式設計",
+                year: 2026
+            });
+
+            renderBooks();
+            showMessage("已新增範例圖書。", "success");
+        });
+
+        // 使用事件委派刪除圖書
+        bookList.addEventListener("click", function (event) {
+            const deleteButton = event.target.closest("button[data-book-id]");
+
+            if (!deleteButton || !bookList.contains(deleteButton)) {
+                return;
+            }
+
+            const bookId = Number(deleteButton.dataset.bookId);
+
+            books = books.filter(function (book) {
+                return book.id !== bookId;
+            });
+
+            renderBooks();
+            showMessage("圖書已刪除。", "info");
+        });
+
+        // 初次載入
+        renderBooks();
+    </script>
+
+</body>
+</html>

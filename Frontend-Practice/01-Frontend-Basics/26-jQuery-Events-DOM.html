@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery 事件與 DOM 操作</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+        }
+
+        .secondary-button {
+            background-color: #6c757d;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .book-list {
+            padding: 0;
+            list-style: none;
+        }
+
+        .book-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 0;
+            padding: 12px;
+            background-color: #f1f3f5;
+            border-radius: 6px;
+        }
+
+        .book-name {
+            overflow-wrap: anywhere;
+        }
+
+        #status {
+            padding: 12px;
+            background-color: #e7f1ff;
+            border-radius: 6px;
+        }
+
+        .empty-message {
+            color: #666;
+            padding: 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="panel">
+        <h1>圖書清單管理</h1>
+
+        <p>練習使用 jQuery 事件與 DOM 操作管理圖書。</p>
+
+        <form id="bookForm">
+            <div class="form-row">
+                <input
+                    type="text"
+                    id="bookTitle"
+                    placeholder="請輸入圖書名稱"
+                    maxlength="100"
+                    required
+                >
+                <button type="submit">新增圖書</button>
+            </div>
+        </form>
+
+        <div class="form-row">
+            <button type="button" id="clearButton" class="secondary-button">
+                清空清單
+            </button>
+            <button type="button" id="restoreButton" class="secondary-button">
+                恢復範例資料
+            </button>
+        </div>
+
+        <p id="bookCount">目前共有 3 本圖書。</p>
+        <p id="status" role="status" aria-live="polite">等待操作。</p>
+
+        <ul id="bookList" class="book-list">
+            <li class="book-item">
+                <span class="book-name">C# 程式設計入門</span>
+                <button type="button" class="delete-button">刪除</button>
+            </li>
+            <li class="book-item">
+                <span class="book-name">JavaScript 網頁開發</span>
+                <button type="button" class="delete-button">刪除</button>
+            </li>
+            <li class="book-item">
+                <span class="book-name">SQL Server 資料庫實務</span>
+                <button type="button" class="delete-button">刪除</button>
+            </li>
+        </ul>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const $bookForm = $("#bookForm");
+            const $bookTitle = $("#bookTitle");
+            const $bookList = $("#bookList");
+            const $bookCount = $("#bookCount");
+            const $status = $("#status");
+
+            const originalBooks = [
+                "C# 程式設計入門",
+                "JavaScript 網頁開發",
+                "SQL Server 資料庫實務"
+            ];
+
+            // 根據目前清單更新圖書數量及空清單提示。
+            function updateBookCount() {
+                const count = $bookList.children(".book-item").length;
+
+                $bookCount.text(`目前共有 ${count} 本圖書。`);
+
+                if (count === 0) {
+                    if ($bookList.children(".empty-message").length === 0) {
+                        $("<li>")
+                            .addClass("empty-message")
+                            .text("目前沒有圖書，請新增一本。")
+                            .appendTo($bookList);
+                    }
+                } else {
+                    $bookList.children(".empty-message").remove();
+                }
+            }
+
+            // 建立新的圖書項目，使用 text() 避免將輸入內容當成 HTML。
+            function createBookItem(title) {
+                const $name = $("<span>")
+                    .addClass("book-name")
+                    .text(title);
+
+                const $deleteButton = $("<button>")
+                    .attr("type", "button")
+                    .addClass("delete-button")
+                    .text("刪除");
+
+                return $("<li>")
+                    .addClass("book-item")
+                    .append($name, $deleteButton);
+            }
+
+            // 表單提交時新增圖書。
+            $bookForm.on("submit", function (event) {
+                event.preventDefault();
+
+                const title = $bookTitle.val().trim();
+
+                if (title === "") {
+                    $status.text("請輸入圖書名稱。");
+                    $bookTitle.trigger("focus");
+                    return;
+                }
+
+                $bookList.children(".empty-message").remove();
+                $bookList.append(createBookItem(title));
+
+                updateBookCount();
+                $status.text(`已新增圖書：${title}`);
+
+                $bookForm[0].reset();
+                $bookTitle.trigger("focus");
+            });
+
+            // 使用事件委派，處理原本存在及後來新增的刪除按鈕。
+            $bookList.on("click", ".delete-button", function () {
+                const $item = $(this).closest(".book-item");
+                const title = $item.find(".book-name").text();
+
+                $item.remove();
+
+                updateBookCount();
+                $status.text(`已刪除圖書：${title}`);
+            });
+
+            // 清空全部圖書。
+            $("#clearButton").on("click", function () {
+                $bookList.children(".book-item").remove();
+
+                updateBookCount();
+                $status.text("已清空圖書清單。");
+            });
+
+            // 恢復原始的三本範例圖書。
+            $("#restoreButton").on("click", function () {
+                $bookList.empty();
+
+                originalBooks.forEach(function (title) {
+                    $bookList.append(createBookItem(title));
+                });
+
+                updateBookCount();
+                $status.text("已恢復範例圖書資料。");
+            });
+
+            // 初始化數量，確保與清單內容一致。
+            updateBookCount();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CSS Grid 網格版面練習</title>
+
+    <style>
+        /* 設定頁面的基本外觀 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        /* Grid 容器：建立三欄網格 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background-color: #dddddd;
+        }
+
+        /* 設定每個網格項目的外觀 */
+        .grid-item {
+            background-color: lightblue;
+            padding: 25px 10px;
+            text-align: center;
+            border: 1px solid steelblue;
+        }
+
+        /* 使用 repeat() 簡化相同欄寬的設定 */
+        .repeat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background-color: #e8e8e8;
+        }
+
+        .repeat-item {
+            background-color: lightgreen;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 建立兩欄網格，左欄較窄、右欄較寬 */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            padding: 15px;
+            background-color: #fff2cc;
+        }
+
+        .two-column-item {
+            background-color: orange;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 使用 Grid 製作書籍卡片版面 */
+        .book-grid {
+            display: grid;
+
+            /* 每欄至少 150px，空間足夠時自動增加欄數 */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+            gap: 15px;
+        }
+
+        .book-card {
+            background-color: white;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .book-card h3 {
+            color: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Grid 網格版面練習</h1>
+
+    <h2>一、建立三欄網格</h2>
+    <p>grid-template-columns 可以設定網格的欄數與寬度。</p>
+
+    <div class="grid-container">
+        <div class="grid-item">項目 1</div>
+        <div class="grid-item">項目 2</div>
+        <div class="grid-item">項目 3</div>
+        <div class="grid-item">項目 4</div>
+        <div class="grid-item">項目 5</div>
+        <div class="grid-item">項目 6</div>
+    </div>
+
+    <h2>二、使用 repeat() 簡化設定</h2>
+    <p>repeat(3, 1fr) 表示建立三個平均分配空間的欄位。</p>
+
+    <div class="repeat-grid">
+        <div class="repeat-item">A</div>
+        <div class="repeat-item">B</div>
+        <div class="repeat-item">C</div>
+        <div class="repeat-item">D</div>
+        <div class="repeat-item">E</div>
+        <div class="repeat-item">F</div>
+    </div>
+
+    <h2>三、設定不同比例的欄位</h2>
+    <p>1fr 2fr 表示第二欄可分配的空間約為第一欄的兩倍。</p>
+
+    <div class="two-column-grid">
+        <div class="two-column-item">左欄（1fr）</div>
+        <div class="two-column-item">右欄（2fr）</div>
+    </div>
+
+    <h2>四、書籍卡片網格</h2>
+    <p>調整瀏覽器寬度，觀察卡片欄數如何隨空間改變。</p>
+
+    <div class="book-grid">
+        <div class="book-card">
+            <h3>C# 入門</h3>
+            <p>作者：王小明</p>
+            <p>狀態：可借閱</p>
+        </div>
+
+        <div class="book-card">
+            <h3>SQL Server 基礎</h3>
+            <p>作者：陳小華</p>
+            <p>狀態：借閱中</p>
+        </div>
+
+        <div class="book-card">
+            <h3>HTML 與 CSS</h3>
+            <p>作者：林小美</p>
+            <p>狀態：可借閱</p>
+        </div>
+
+        <div class="book-card">
+            <h3>JavaScript 入門</h3>
+            <p>作者：張小安</p>
+            <p>狀態：可借閱</p>
+        </div>
+    </div>
+</body>
+</html>

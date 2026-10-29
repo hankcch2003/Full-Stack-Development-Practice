@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CSS 盒模型練習</title>
+
+    <style>
+        /* 設定整個頁面的基本字型與背景色 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 20px;
+        }
+
+        /* 第一個區塊：觀察內距、邊框與外距 */
+        .box-one {
+            background-color: lightblue;
+            padding: 20px;
+            border: 3px solid blue;
+            margin: 20px;
+        }
+
+        /* 第二個區塊：使用不同的內距與外距 */
+        .box-two {
+            background-color: lightgreen;
+            padding: 10px 30px;
+            border: 2px dashed green;
+            margin: 30px 10px;
+        }
+
+        /* 第三個區塊：設定固定寬度 */
+        .box-three {
+            width: 300px;
+            background-color: lightyellow;
+            padding: 20px;
+            border: 3px solid orange;
+            margin: 20px 0;
+        }
+
+        /* 使用 border-box，讓寬度計算更容易掌握 */
+        .box-four {
+            box-sizing: border-box;
+            width: 300px;
+            background-color: #e8d5f5;
+            padding: 20px;
+            border: 3px solid purple;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS 盒模型練習</h1>
+
+    <h2>一、基本盒模型</h2>
+    <div class="box-one">
+        這個區塊使用 20px 內距、3px 邊框及 20px 外距。
+    </div>
+
+    <h2>二、不同方向的內距與外距</h2>
+    <div class="box-two">
+        這個區塊使用上下 10px、左右 30px 的內距。
+        外距則是上下 30px、左右 10px。
+    </div>
+
+    <h2>三、一般的 width 計算方式</h2>
+    <div class="box-three">
+        設定 width: 300px，再加上左右內距與左右邊框，
+        實際占用的寬度會超過 300px。
+    </div>
+
+    <h2>四、使用 box-sizing: border-box</h2>
+    <div class="box-four">
+        這個區塊的總寬度會維持在 300px，
+        內距與邊框都包含在設定的寬度內。
+    </div>
+</body>
+</html>

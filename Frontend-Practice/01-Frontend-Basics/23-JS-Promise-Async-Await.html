@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 非同步處理練習</title>
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        button {
+            margin: 6px 6px 6px 0;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 16px;
+            font-weight: bold;
+        }
+
+        #result {
+            padding: 12px;
+            background-color: #eef3f8;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <h1>圖書資料非同步載入</h1>
+        <p>練習使用 Promise、async、await 與 try...catch。</p>
+
+        <button id="loadButton">載入圖書</button>
+        <button id="errorButton">測試錯誤處理</button>
+
+        <p id="status">等待操作</p>
+        <div id="result">尚無圖書資料</div>
+    </main>
+
+    <script>
+        const loadButton = document.querySelector("#loadButton");
+        const errorButton = document.querySelector("#errorButton");
+        const status = document.querySelector("#status");
+        const result = document.querySelector("#result");
+
+        // 模擬非同步取得圖書資料，兩秒後才回傳結果。
+        function getBooks() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve([
+                        {
+                            id: 1,
+                            title: "C# 程式設計入門",
+                            author: "王小明"
+                        },
+                        {
+                            id: 2,
+                            title: "JavaScript 網頁開發",
+                            author: "陳小華"
+                        },
+                        {
+                            id: 3,
+                            title: "SQL Server 資料庫實務",
+                            author: "林小美"
+                        }
+                    ]);
+                }, 2000);
+            });
+        }
+
+        // async 函式會回傳 Promise；await 等待 Promise 完成。
+        async function loadBooks() {
+            loadButton.disabled = true;
+            errorButton.disabled = true;
+            status.textContent = "正在載入圖書資料...";
+            result.textContent = "請稍候兩秒。";
+
+            try {
+                const books = await getBooks();
+
+                result.textContent = books
+                    .map((book) => {
+                        return `編號：${book.id}\n書名：${book.title}\n作者：${book.author}`;
+                    })
+                    .join("\n\n");
+
+                status.textContent = `載入完成，共 ${books.length} 本圖書。`;
+            } catch (error) {
+                status.textContent = "載入失敗：" + error.message;
+            } finally {
+                loadButton.disabled = false;
+                errorButton.disabled = false;
+            }
+        }
+
+        // 回傳一個被拒絕的 Promise，用來測試錯誤處理。
+        function getInvalidBooks() {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error("模擬圖書資料載入失敗"));
+                }, 1000);
+            });
+        }
+
+        async function testErrorHandling() {
+            loadButton.disabled = true;
+            errorButton.disabled = true;
+            status.textContent = "正在測試錯誤處理...";
+            result.textContent = "請稍候一秒。";
+
+            try {
+                const books = await getInvalidBooks();
+                result.textContent = JSON.stringify(books);
+                status.textContent = "載入完成";
+            } catch (error) {
+                status.textContent = "已捕捉錯誤";
+                result.textContent = error.message;
+            } finally {
+                loadButton.disabled = false;
+                errorButton.disabled = false;
+            }
+        }
+
+        loadButton.addEventListener("click", loadBooks);
+        errorButton.addEventListener("click", testErrorHandling);
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 函式練習</title>
+</head>
+<body>
+    <h1>JavaScript 函式練習</h1>
+    <p>請按 F12 開啟開發者工具，查看 Console 輸出。</p>
+
+    <script>
+        // 一、宣告函式：集中處理重複使用的程式
+        function showWelcome() {
+            console.log("歡迎使用圖書管理系統");
+        }
+
+        console.log("=== 函式呼叫 ===");
+        showWelcome();
+
+        // 二、參數：讓函式接收外部資料
+        function showBook(bookName) {
+            console.log("書名：" + bookName);
+        }
+
+        console.log("=== 函式參數 ===");
+        showBook("C# 入門教學");
+        showBook("JavaScript 入門");
+
+        // 三、多個參數
+        function showBookInfo(bookName, author) {
+            console.log("書名：" + bookName + "，作者：" + author);
+        }
+
+        console.log("=== 多個參數 ===");
+        showBookInfo("C# 入門教學", "王小明");
+
+        // 四、return：回傳計算結果
+        function calculateTotal(price, quantity) {
+            return price * quantity;
+        }
+
+        console.log("=== 回傳結果 ===");
+        const total = calculateTotal(300, 2);
+        console.log("總金額：" + total);
+
+        // 五、函式搭配條件判斷
+        function checkStock(stock) {
+            if (stock > 0) {
+                return "可以借閱";
+            }
+
+            return "目前無庫存";
+        }
+
+        console.log("=== 庫存檢查 ===");
+        console.log(checkStock(5));
+        console.log(checkStock(0));
+
+        // 六、函式運算：計算折扣後價格
+        function calculateDiscount(price, discountRate) {
+            return price * discountRate;
+        }
+
+        console.log("=== 折扣計算 ===");
+        console.log("折扣後價格：" + calculateDiscount(1000, 0.9));
+
+        // 七、函式表達式
+        const greet = function (name) {
+            return "你好，" + name;
+        };
+
+        console.log("=== 函式表達式 ===");
+        console.log(greet("讀者"));
+
+        // 八、箭頭函式
+        const add = (a, b) => {
+            return a + b;
+        };
+
+        console.log("=== 箭頭函式 ===");
+        console.log("10 + 20 = " + add(10, 20));
+
+        // 九、單行箭頭函式：省略大括號與 return
+        const double = number => number * 2;
+
+        console.log("=== 單行箭頭函式 ===");
+        console.log("8 的兩倍：" + double(8));
+    </script>
+</body>
+</html>

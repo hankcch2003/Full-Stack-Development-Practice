@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 點擊事件與事件處理練習</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            margin: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 24px;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        section {
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 6px 0;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        button {
+            padding: 8px 14px;
+            margin: 6px 4px 6px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #2878c8;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #185a96;
+        }
+
+        .message {
+            padding: 10px;
+            background-color: #eef5ff;
+            border-radius: 5px;
+        }
+
+        .success {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #c62828;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript 點擊事件與事件處理練習</h1>
+        <p>練習使用 JavaScript 監聽使用者操作，並即時更新頁面內容。</p>
+
+        <section>
+            <h2>1. 點擊事件</h2>
+            <p>目前點擊次數：<span id="clickCount">0</span></p>
+            <button id="clickButton" type="button">點我增加次數</button>
+            <button id="resetButton" type="button">重設次數</button>
+        </section>
+
+        <section>
+            <h2>2. 輸入事件</h2>
+            <label for="bookTitle">請輸入書名：</label><br>
+            <input
+                type="text"
+                id="bookTitle"
+                placeholder="例如：JavaScript 入門"
+            >
+            <p class="message">
+                即時預覽：<span id="titlePreview">尚未輸入書名</span>
+            </p>
+        </section>
+
+        <section>
+            <h2>3. 下拉選單變更事件</h2>
+            <label for="bookCategory">選擇圖書分類：</label><br>
+            <select id="bookCategory">
+                <option value="程式設計">程式設計</option>
+                <option value="資料庫">資料庫</option>
+                <option value="網頁設計">網頁設計</option>
+                <option value="其他">其他</option>
+            </select>
+            <p>目前分類：<span id="categoryResult">程式設計</span></p>
+        </section>
+
+        <section>
+            <h2>4. 表單提交事件</h2>
+            <form id="bookForm">
+                <label for="formBookTitle">圖書名稱：</label><br>
+                <input
+                    type="text"
+                    id="formBookTitle"
+                    placeholder="請輸入圖書名稱"
+                >
+                <br>
+
+                <label for="formAuthor">作者：</label><br>
+                <input
+                    type="text"
+                    id="formAuthor"
+                    placeholder="請輸入作者名稱"
+                >
+                <br>
+
+                <button type="submit">送出圖書資料</button>
+            </form>
+
+            <p id="formMessage" class="message">
+                請填寫資料後送出。
+            </p>
+        </section>
+    </div>
+
+    <script>
+        // 取得頁面元素
+        const clickCount = document.getElementById("clickCount");
+        const clickButton = document.getElementById("clickButton");
+        const resetButton = document.getElementById("resetButton");
+
+        const bookTitle = document.getElementById("bookTitle");
+        const titlePreview = document.getElementById("titlePreview");
+
+        const bookCategory = document.getElementById("bookCategory");
+        const categoryResult = document.getElementById("categoryResult");
+
+        const bookForm = document.getElementById("bookForm");
+        const formBookTitle = document.getElementById("formBookTitle");
+        const formAuthor = document.getElementById("formAuthor");
+        const formMessage = document.getElementById("formMessage");
+
+        // 1. click：監聽按鈕點擊事件
+        let count = 0;
+
+        clickButton.addEventListener("click", function () {
+            count++;
+            clickCount.textContent = count;
+        });
+
+        resetButton.addEventListener("click", function () {
+            count = 0;
+            clickCount.textContent = count;
+        });
+
+        // 2. input：輸入內容時即時更新預覽
+        bookTitle.addEventListener("input", function () {
+            const title = bookTitle.value.trim();
+
+            if (title === "") {
+                titlePreview.textContent = "尚未輸入書名";
+            } else {
+                titlePreview.textContent = title;
+            }
+        });
+
+        // 3. change：下拉選單選項改變時更新分類
+        bookCategory.addEventListener("change", function () {
+            categoryResult.textContent = bookCategory.value;
+        });
+
+        // 4. submit：攔截表單提交並檢查資料
+        bookForm.addEventListener("submit", function (event) {
+            // 避免表單提交後重新載入頁面
+            event.preventDefault();
+
+            const title = formBookTitle.value.trim();
+            const author = formAuthor.value.trim();
+
+            if (title === "" || author === "") {
+                formMessage.textContent = "請完整填寫圖書名稱與作者。";
+                formMessage.className = "message error";
+                return;
+            }
+
+            formMessage.textContent =
+                "新增成功！書名：" + title + "，作者：" + author;
+
+            formMessage.className = "message success";
+
+            console.log("圖書名稱：", title);
+            console.log("作者：", author);
+        });
+    </script>
+</body>
+</html>

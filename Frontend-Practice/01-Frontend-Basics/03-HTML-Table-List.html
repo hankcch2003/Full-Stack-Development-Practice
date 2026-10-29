@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 設定瀏覽器分頁標題 -->
+    <title>書籍資料與學習清單</title>
+</head>
+<body>
+    <h1>書籍資料與學習清單</h1>
+
+    <h2>書籍列表</h2>
+
+    <!-- table 用來建立表格 -->
+    <table border="1">
+        <!-- thead 放置表格的標題列 -->
+        <thead>
+            <tr>
+                <!-- th 是表頭儲存格 -->
+                <th>編號</th>
+                <th>書名</th>
+                <th>作者</th>
+                <th>借閱狀態</th>
+            </tr>
+        </thead>
+
+        <!-- tbody 放置表格的資料內容 -->
+        <tbody>
+            <!-- tr 代表一列資料，td 代表一般資料儲存格 -->
+            <tr>
+                <td>1</td>
+                <td>C# 入門教學</td>
+                <td>王小明</td>
+                <td>可借閱</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>SQL Server 基礎</td>
+                <td>陳小華</td>
+                <td>借閱中</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>HTML 與 CSS 入門</td>
+                <td>林小美</td>
+                <td>可借閱</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>今日學習任務</h2>
+
+    <!-- ul 建立無序清單，項目前面通常會顯示圓點 -->
+    <ul>
+        <li>練習 HTML 表格</li>
+        <li>練習 HTML 清單</li>
+        <li>確認網頁可以正常開啟</li>
+    </ul>
+
+    <h2>學習順序</h2>
+
+    <!-- ol 建立有序清單，項目前面通常會顯示數字 -->
+    <ol>
+        <li>學習 HTML</li>
+        <li>學習 CSS</li>
+        <li>學習 JavaScript</li>
+    </ol>
+</body>
+</html>

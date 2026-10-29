@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 導覽列與容器排版</title>
+
+    <!-- 載入 Bootstrap 5 樣式 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+<body class="bg-light">
+
+    <!-- 網站導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">圖書管理系統</a>
+
+            <!-- 手機版導覽列按鈕 -->
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="切換導覽列"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- 導覽選單 -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#books">圖書清單</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">關於系統</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="container my-4">
+
+        <!-- 歡迎區塊 -->
+        <section id="home" class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm">
+            <h1 class="mb-3">歡迎使用圖書管理系統</h1>
+            <p class="lead">
+                使用 Bootstrap 建立簡潔、整齊且適合不同螢幕的網站介面。
+            </p>
+            <a href="#books" class="btn btn-primary">查看圖書清單</a>
+        </section>
+
+        <!-- 圖書清單區塊 -->
+        <section id="books" class="bg-white p-4 mb-4 rounded shadow-sm">
+            <h2 class="h4 mb-3">圖書管理功能</h2>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h5">新增圖書</h3>
+                        <p class="mb-0">建立新書籍資料。</p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h5">查詢圖書</h3>
+                        <p class="mb-0">查看目前的圖書清單。</p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h5">管理資料</h3>
+                        <p class="mb-0">為後續編輯與刪除功能預留介面。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 關於系統區塊 -->
+        <section id="about" class="bg-white p-4 mb-4 rounded shadow-sm">
+            <h2 class="h4">關於系統</h2>
+            <p class="mb-0">
+                這是 Bootstrap 排版練習頁面，目前使用靜態資料，尚未連接 ASP.NET Core Web API 或 SQL Server。
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="text-center text-secondary py-3">
+        <small>圖書管理系統｜Bootstrap 版面練習</small>
+    </footer>
+
+    <!-- 載入 Bootstrap JavaScript，讓手機版導覽列可以展開與收合 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

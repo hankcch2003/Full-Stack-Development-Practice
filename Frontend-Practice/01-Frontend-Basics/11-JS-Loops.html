@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 迴圈練習</title>
+</head>
+<body>
+    <h1>JavaScript 迴圈練習</h1>
+    <p>請按 F12 開啟開發者工具，查看 Console 輸出。</p>
+
+    <script>
+        // 一、for 迴圈：重複執行指定次數
+        console.log("=== for 迴圈 ===");
+
+        for (let i = 1; i <= 5; i++) {
+            console.log("第 " + i + " 本書");
+        }
+
+        // 二、while 迴圈：條件成立時持續執行
+        console.log("=== while 迴圈 ===");
+
+        let stock = 3;
+
+        while (stock > 0) {
+            console.log("剩餘庫存：" + stock);
+            stock--;
+        }
+
+        console.log("庫存已經用完");
+
+        // 三、do...while：至少執行一次
+        console.log("=== do...while 迴圈 ===");
+
+        let count = 1;
+
+        do {
+            console.log("執行次數：" + count);
+            count++;
+        } while (count <= 3);
+
+        // 四、break：提前結束迴圈
+        console.log("=== break ===");
+
+        for (let i = 1; i <= 5; i++) {
+            if (i === 4) {
+                break;
+            }
+
+            console.log("目前編號：" + i);
+        }
+
+        // 五、continue：跳過本次迴圈
+        console.log("=== continue ===");
+
+        for (let i = 1; i <= 5; i++) {
+            if (i === 3) {
+                continue;
+            }
+
+            console.log("書籍編號：" + i);
+        }
+
+        // 六、使用迴圈計算書籍總價
+        console.log("=== 書籍總價計算 ===");
+
+        const prices = [100, 200, 300, 400];
+        let total = 0;
+
+        for (let i = 0; i < prices.length; i++) {
+            total += prices[i];
+        }
+
+        console.log("書籍總數：" + prices.length);
+        console.log("書籍總價：" + total);
+
+        // 七、for...of：逐一讀取陣列內容
+        console.log("=== for...of ===");
+
+        const books = ["C#", "JavaScript", "SQL Server"];
+
+        for (const book of books) {
+            console.log("書名：" + book);
+        }
+    </script>
+</body>
+</html>

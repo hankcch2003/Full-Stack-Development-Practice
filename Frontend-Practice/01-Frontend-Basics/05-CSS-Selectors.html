@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CSS 選擇器練習</title>
+
+    <!-- style 區塊用來撰寫 CSS 樣式 -->
+    <style>
+        /* 元素選擇器：設定所有 h1 標題的樣式 */
+        h1 {
+            color: darkblue;
+            text-align: center;
+        }
+
+        /* 元素選擇器：設定所有段落的文字大小 */
+        p {
+            font-size: 18px;
+        }
+
+        /* 類別選擇器：使用 .highlight 選取指定 class 的元素 */
+        .highlight {
+            color: darkred;
+            font-weight: bold;
+        }
+
+        /* ID 選擇器：使用 #main-title 選取指定 id 的元素 */
+        #main-title {
+            background-color: lightyellow;
+            padding: 10px;
+        }
+
+        /* 後代選擇器：只選取 .book-info 裡面的 p 元素 */
+        .book-info p {
+            color: darkgreen;
+        }
+
+        /* 群組選擇器：同時設定 h2 和 h3 */
+        h2,
+        h3 {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="main-title">CSS 選擇器練習</h1>
+
+    <h2>一、元素選擇器</h2>
+    <p>這是一段一般文字，所有段落都會套用指定的文字大小。</p>
+
+    <h2>二、類別選擇器</h2>
+    <p class="highlight">這段文字會變成深紅色並加粗。</p>
+    <p>這段文字沒有套用 highlight 類別。</p>
+
+    <h2>三、ID 選擇器</h2>
+    <p>最上方的主標題使用 main-title ID，因此會顯示淡黃色背景。</p>
+
+    <h2>四、後代選擇器</h2>
+    <div class="book-info">
+        <p>這段文字位於 book-info 區塊內，因此會變成深綠色。</p>
+        <p>這也是 book-info 區塊內的段落。</p>
+    </div>
+
+    <p>這段文字位於 book-info 區塊外，不會套用後代選擇器的深綠色。</p>
+
+    <h2>五、群組選擇器</h2>
+    <h3>這個小標題也會套用指定字型</h3>
+
+    <p class="highlight">透過不同選擇器，可以控制不同 HTML 元素的外觀。</p>
+</body>
+</html>

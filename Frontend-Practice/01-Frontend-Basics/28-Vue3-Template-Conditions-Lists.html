@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 圖書清單管理</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #198754;
+            color: white;
+            cursor: pointer;
+        }
+
+        .secondary-button {
+            background-color: #6c757d;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .book-card {
+            padding: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .book-card h2 {
+            font-size: 18px;
+        }
+
+        .book-card p {
+            color: #555;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            background-color: #e8f5e9;
+        }
+
+        .empty-message {
+            color: #666;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+
+<body>
+    <main id="app" class="panel">
+        <h1>Vue 3 圖書管理清單</h1>
+
+        <p>練習 Vue 3 的模板語法、條件判斷與清單渲染。</p>
+
+        <p class="status">
+            {{ statusMessage }}
+        </p>
+
+        <div class="toolbar">
+            <input
+                v-model.trim="searchKeyword"
+                type="text"
+                placeholder="搜尋圖書名稱或作者"
+                aria-label="搜尋圖書"
+            >
+
+            <select v-model="selectedCategory" aria-label="選擇圖書分類">
+                <option value="全部">全部分類</option>
+                <option value="程式設計">程式設計</option>
+                <option value="資料庫">資料庫</option>
+                <option value="網頁開發">網頁開發</option>
+            </select>
+        </div>
+
+        <p>目前共有 {{ books.length }} 本圖書。</p>
+        <p>符合搜尋條件：{{ filteredBooks.length }} 本</p>
+
+        <ul class="book-list">
+            <li
+                v-for="book in filteredBooks"
+                :key="book.id"
+                class="book-card"
+            >
+                <h2>{{ book.title }}</h2>
+                <p>作者：{{ book.author }}</p>
+                <p>分類：{{ book.category }}</p>
+
+                <p v-if="book.available">狀態：可借閱</p>
+                <p v-else>狀態：目前不可借閱</p>
+
+                <button
+                    type="button"
+                    @click="toggleAvailability(book)"
+                >
+                    {{ book.available ? "設為不可借閱" : "設為可借閱" }}
+                </button>
+
+                <button
+                    type="button"
+                    class="delete-button"
+                    @click="deleteBook(book.id)"
+                >
+                    刪除
+                </button>
+            </li>
+
+            <li
+                v-if="filteredBooks.length === 0"
+                class="empty-message"
+            >
+                找不到符合條件的圖書。
+            </li>
+        </ul>
+
+        <div class="toolbar">
+            <button type="button" @click="restoreBooks">
+                恢復範例資料
+            </button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                @click="clearSearch"
+            >
+                清除搜尋
+            </button>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    statusMessage: "圖書資料已準備完成。",
+                    searchKeyword: "",
+                    selectedCategory: "全部",
+
+                    // 範例資料只存在瀏覽器記憶體中。
+                    initialBooks: [
+                        {
+                            id: 1,
+                            title: "C# 程式設計入門",
+                            author: "王小明",
+                            category: "程式設計",
+                            available: true
+                        },
+                        {
+                            id: 2,
+                            title: "JavaScript 網頁開發",
+                            author: "陳小華",
+                            category: "網頁開發",
+                            available: true
+                        },
+                        {
+                            id: 3,
+                            title: "SQL Server 資料庫實務",
+                            author: "林小美",
+                            category: "資料庫",
+                            available: false
+                        },
+                        {
+                            id: 4,
+                            title: "ASP.NET Core Web API",
+                            author: "張小安",
+                            category: "程式設計",
+                            available: true
+                        }
+                    ],
+
+                    books: []
+                };
+            },
+
+            computed: {
+                // 搜尋文字與分類變更時，Vue 會自動重新計算。
+                filteredBooks() {
+                    const keyword = this.searchKeyword.toLowerCase();
+
+                    return this.books.filter((book) => {
+                        const matchesKeyword =
+                            book.title.toLowerCase().includes(keyword) ||
+                            book.author.toLowerCase().includes(keyword);
+
+                        const matchesCategory =
+                            this.selectedCategory === "全部" ||
+                            book.category === this.selectedCategory;
+
+                        return matchesKeyword && matchesCategory;
+                    });
+                }
+            },
+
+            methods: {
+                toggleAvailability(book) {
+                    book.available = !book.available;
+                    this.statusMessage =
+                        `已更新圖書狀態：${book.title}`;
+                },
+
+                deleteBook(id) {
+                    const book = this.books.find((item) => item.id === id);
+
+                    this.books = this.books.filter(
+                        (item) => item.id !== id
+                    );
+
+                    if (book) {
+                        this.statusMessage =
+                            `已刪除圖書：${book.title}`;
+                    }
+                },
+
+                restoreBooks() {
+                    this.books = this.initialBooks.map((book) => ({
+                        ...book
+                    }));
+
+                    this.statusMessage = "已恢復範例圖書資料。";
+                },
+
+                clearSearch() {
+                    this.searchKeyword = "";
+                    this.selectedCategory = "全部";
+                    this.statusMessage = "已清除搜尋條件。";
+                }
+            },
+
+            mounted() {
+                this.restoreBooks();
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

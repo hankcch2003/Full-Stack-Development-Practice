@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery AJAX 圖書資料查詢</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        .secondary-button {
+            background-color: #6c757d;
+        }
+
+        #status {
+            padding: 12px;
+            border-radius: 6px;
+            background-color: #e7f1ff;
+        }
+
+        .error {
+            color: #b02a37;
+            background-color: #f8d7da !important;
+        }
+
+        #postList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .post-card {
+            padding: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .post-card h2 {
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .post-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            color: #666;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="panel">
+        <h1>線上圖書資料查詢</h1>
+
+        <p>
+            使用 jQuery AJAX 取得公開 API 資料，練習非同步請求與畫面更新。
+        </p>
+
+        <div class="toolbar">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="輸入標題關鍵字，例如 sunt"
+                aria-label="搜尋文章標題"
+            >
+            <button type="button" id="searchButton">搜尋</button>
+            <button type="button" id="reloadButton" class="secondary-button">
+                重新載入全部
+            </button>
+        </div>
+
+        <p id="status" role="status" aria-live="polite">
+            尚未載入資料。
+        </p>
+
+        <ul id="postList">
+            <li class="empty-message">請點擊「重新載入全部」。</li>
+        </ul>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const apiUrl = "https://jsonplaceholder.typicode.com/posts";
+
+            const $status = $("#status");
+            const $postList = $("#postList");
+            const $searchInput = $("#searchInput");
+            const $searchButton = $("#searchButton");
+            const $reloadButton = $("#reloadButton");
+
+            let allPosts = [];
+
+            // 將文章資料轉成卡片。
+            function renderPosts(posts) {
+                $postList.empty();
+
+                if (posts.length === 0) {
+                    $("<li>")
+                        .addClass("empty-message")
+                        .text("找不到符合條件的資料。")
+                        .appendTo($postList);
+
+                    return;
+                }
+
+                posts.forEach(function (post) {
+                    const $title = $("<h2>").text(post.title);
+                    const $id = $("<p>").text(`資料編號：${post.id}`);
+                    const $body = $("<p>").text(post.body);
+
+                    $("<li>")
+                        .addClass("post-card")
+                        .append($title, $id, $body)
+                        .appendTo($postList);
+                });
+            }
+
+            // 使用 AJAX 發送 HTTP GET 請求。
+            function loadPosts() {
+                $status.removeClass("error")
+                    .text("正在向 API 載入資料...");
+
+                $postList.empty();
+
+                $searchButton.prop("disabled", true);
+                $reloadButton.prop("disabled", true);
+
+                $.ajax({
+                    url: apiUrl,
+                    method: "GET",
+                    dataType: "json",
+                    timeout: 10000,
+
+                    // 請求成功時執行。
+                    success: function (data) {
+                        if (!Array.isArray(data)) {
+                            $status.addClass("error")
+                                .text("API 回傳的資料格式不正確。");
+
+                            allPosts = [];
+                            renderPosts([]);
+                            return;
+                        }
+
+                        allPosts = data;
+
+                        renderPosts(allPosts);
+
+                        $status.text(
+                            `載入成功，共取得 ${allPosts.length} 筆資料。`
+                        );
+                    },
+
+                    // 網路錯誤、逾時或 HTTP 錯誤時執行。
+                    error: function (xhr, textStatus) {
+                        allPosts = [];
+
+                        $status.addClass("error")
+                            .text(
+                                `資料載入失敗：${textStatus}，HTTP 狀態碼：${xhr.status}`
+                            );
+
+                        renderPosts([]);
+                    },
+
+                    // 請求結束後，不論成功或失敗都會執行。
+                    complete: function () {
+                        $searchButton.prop("disabled", false);
+                        $reloadButton.prop("disabled", false);
+                    }
+                });
+            }
+
+            // 只在已載入的資料中搜尋，不會每次搜尋都呼叫 API。
+            function searchPosts() {
+                const keyword = $searchInput.val().trim().toLowerCase();
+
+                const filteredPosts = allPosts.filter(function (post) {
+                    return post.title.toLowerCase().includes(keyword);
+                });
+
+                renderPosts(filteredPosts);
+
+                $status.text(
+                    `搜尋完成，找到 ${filteredPosts.length} 筆資料。`
+                );
+            }
+
+            $searchButton.on("click", searchPosts);
+
+            // 按 Enter 也可以搜尋。
+            $searchInput.on("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    searchPosts();
+                }
+            });
+
+            $reloadButton.on("click", loadPosts);
+
+            // 頁面開啟後自動載入資料。
+            loadPosts();
+        });
+    </script>
+</body>
+</html>

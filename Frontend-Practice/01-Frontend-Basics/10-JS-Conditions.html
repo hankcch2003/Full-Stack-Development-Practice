@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 條件判斷練習</title>
+</head>
+<body>
+    <h1>JavaScript 條件判斷練習</h1>
+    <p>請按 F12 開啟開發者工具，查看 Console 輸出。</p>
+
+    <script>
+        // 一、if、else if、else：判斷書籍庫存
+        const bookName = "C# 入門教學";
+        let stock = 5;
+
+        console.log("=== 書籍庫存判斷 ===");
+
+        if (stock > 10) {
+            console.log(bookName + "：庫存充足");
+        } else if (stock > 0) {
+            console.log(bookName + "：庫存不足，但仍可借閱");
+        } else {
+            console.log(bookName + "：目前無庫存");
+        }
+
+        // 二、邏輯運算子 &&：兩個條件都成立
+        const age = 20;
+        const hasLibraryCard = true;
+
+        console.log("=== 借閱資格判斷 ===");
+
+        if (age >= 18 && hasLibraryCard) {
+            console.log("符合借閱資格");
+        } else {
+            console.log("不符合借閱資格");
+        }
+
+        // 三、邏輯運算子 ||：至少一個條件成立
+        const isAdmin = false;
+        const isLibrarian = true;
+
+        if (isAdmin || isLibrarian) {
+            console.log("可以管理書籍");
+        } else {
+            console.log("沒有書籍管理權限");
+        }
+
+        // 四、邏輯運算子 !：反轉布林值
+        const isBorrowed = false;
+
+        if (!isBorrowed) {
+            console.log("這本書目前可以借閱");
+        } else {
+            console.log("這本書已被借出");
+        }
+
+        // 五、switch：依照選項執行不同程式
+        const menuOption = 2;
+
+        console.log("=== 書籍管理選單 ===");
+
+        switch (menuOption) {
+            case 1:
+                console.log("執行新增書籍");
+                break;
+            case 2:
+                console.log("執行查詢書籍");
+                break;
+            case 3:
+                console.log("執行修改書籍");
+                break;
+            case 4:
+                console.log("執行刪除書籍");
+                break;
+            default:
+                console.log("無效的選單選項");
+        }
+
+        // 六、使用條件判斷計算折扣
+        const price = 800;
+        let finalPrice = price;
+
+        if (price >= 1000) {
+            finalPrice = price * 0.8;
+        } else if (price >= 500) {
+            finalPrice = price * 0.9;
+        }
+
+        console.log("=== 書籍價格計算 ===");
+        console.log("原價：" + price);
+        console.log("折扣後價格：" + finalPrice);
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery 選擇器與樣式操作</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+        }
+
+        .book-list {
+            padding-left: 24px;
+        }
+
+        .book-item {
+            margin: 10px 0;
+            padding: 12px;
+            background-color: #f1f3f5;
+            border-radius: 6px;
+        }
+
+        .featured {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .highlight {
+            color: #b02a37;
+            font-weight: bold;
+        }
+
+        #status {
+            padding: 12px;
+            background-color: #e7f1ff;
+            border-radius: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="panel">
+        <h1 id="pageTitle">圖書管理清單</h1>
+
+        <p id="description">
+            練習使用 jQuery 選擇器與樣式操作。
+        </p>
+
+        <div class="toolbar">
+            <button id="changeTitleButton">修改標題</button>
+            <button id="highlightButton">標示第一本書</button>
+            <button id="colorButton">切換文字顏色</button>
+            <button id="toggleButton">顯示／隱藏說明</button>
+            <button id="resetButton">恢復原始畫面</button>
+        </div>
+
+        <p id="status">目前尚未執行操作。</p>
+
+        <section>
+            <h2>圖書清單</h2>
+
+            <ul id="bookList" class="book-list">
+                <li class="book-item">C# 程式設計入門</li>
+                <li class="book-item">JavaScript 網頁開發</li>
+                <li class="book-item">SQL Server 資料庫實務</li>
+                <li class="book-item">ASP.NET Core Web API</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- 使用 jQuery CDN，需保持網路連線 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const originalTitle = "圖書管理清單";
+            const originalDescription =
+                "練習使用 jQuery 選擇器與樣式操作。";
+
+            let isRed = false;
+
+            // 使用 ID 選擇器修改標題。
+            $("#changeTitleButton").on("click", function () {
+                $("#pageTitle").text("我的圖書管理系統");
+                $("#status").text("已修改頁面標題。");
+            });
+
+            // 使用類別選擇器，標示第一本書。
+            $("#highlightButton").on("click", function () {
+                $(".book-item").first().toggleClass("featured");
+                $("#status").text("已切換第一本書的標示樣式。");
+            });
+
+            // 使用 css() 修改所有圖書項目的文字顏色。
+            $("#colorButton").on("click", function () {
+                isRed = !isRed;
+
+                $(".book-item").css(
+                    "color",
+                    isRed ? "#b02a37" : "#212529"
+                );
+
+                $("#status").text(
+                    isRed ? "圖書文字已改為紅色。" : "圖書文字已恢復深色。"
+                );
+            });
+
+            // 使用 toggleClass() 控制說明文字的顯示狀態。
+            $("#toggleButton").on("click", function () {
+                $("#description").toggleClass("hidden");
+
+                const isHidden = $("#description").hasClass("hidden");
+
+                $("#status").text(
+                    isHidden ? "說明文字已隱藏。" : "說明文字已顯示。"
+                );
+            });
+
+            // 將頁面恢復成初始狀態。
+            $("#resetButton").on("click", function () {
+                $("#pageTitle").text(originalTitle);
+                $("#description")
+                    .text(originalDescription)
+                    .removeClass("hidden");
+
+                $(".book-item")
+                    .removeClass("featured")
+                    .css("color", "#212529");
+
+                isRed = false;
+
+                $("#status").text("畫面已恢復原始狀態。");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DOM 元素選取與文字更新練習</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .book-card {
+            padding: 16px;
+            margin: 12px 0;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+        }
+
+        .highlight {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 8px 14px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript DOM 元素選取與文字更新練習</h1>
+
+    <section class="book-card">
+        <h2 id="pageTitle">圖書管理系統</h2>
+        <p id="message">歡迎使用圖書管理系統。</p>
+        <p>目前書籍：<span id="bookName">C# 入門教學</span></p>
+        <p>書籍價格：<span id="bookPrice">350</span> 元</p>
+    </section>
+
+    <section class="book-card">
+        <h2>書籍清單</h2>
+        <p class="book-item">JavaScript 入門</p>
+        <p class="book-item">SQL Server 實戰</p>
+        <p class="book-item">ASP.NET Core 開發</p>
+    </section>
+
+    <button id="updateButton">更新頁面內容</button>
+    <button id="styleButton">變更書名樣式</button>
+
+    <script>
+        // 一、透過 ID 選取元素
+        const pageTitle = document.getElementById("pageTitle");
+        const message = document.getElementById("message");
+        const bookName = document.getElementById("bookName");
+        const bookPrice = document.getElementById("bookPrice");
+
+        console.log("=== 透過 ID 選取元素 ===");
+        console.log(pageTitle);
+        console.log("目前標題：" + pageTitle.textContent);
+        console.log("目前書名：" + bookName.textContent);
+
+        // 二、透過 CSS 選擇器選取單一元素
+        const firstBook = document.querySelector(".book-item");
+
+        console.log("=== querySelector ===");
+        console.log("第一本清單書籍：" + firstBook.textContent);
+
+        // 三、選取所有符合條件的元素
+        const allBooks = document.querySelectorAll(".book-item");
+
+        console.log("=== querySelectorAll ===");
+        console.log("清單書籍數量：" + allBooks.length);
+
+        allBooks.forEach(function (book, index) {
+            console.log((index + 1) + ". " + book.textContent);
+        });
+
+        // 四、讀取與修改文字
+        pageTitle.textContent = "我的圖書管理系統";
+        message.textContent = "已成功讀取頁面元素。";
+
+        console.log("更新後標題：" + pageTitle.textContent);
+
+        // 五、更新書籍資料
+        bookName.textContent = "JavaScript 實戰";
+        bookPrice.textContent = "450";
+
+        console.log("更新後書名：" + bookName.textContent);
+        console.log("更新後價格：" + bookPrice.textContent);
+
+        // 六、修改 CSS 樣式
+        bookName.style.color = "blue";
+        bookName.style.fontWeight = "bold";
+
+        // 七、透過 classList 管理 CSS 類別
+        message.classList.add("highlight");
+
+        console.log("訊息是否有 highlight 類別："
+            + message.classList.contains("highlight"));
+
+        // 八、透過按鈕更新網頁內容
+        const updateButton = document.getElementById("updateButton");
+
+        updateButton.addEventListener("click", function () {
+            message.textContent = "你已經成功更新網頁內容！";
+            bookName.textContent = "ASP.NET Core 開發";
+            bookPrice.textContent = "600";
+
+            console.log("使用者點擊更新按鈕");
+        });
+
+        // 九、透過按鈕切換 CSS 類別
+        const styleButton = document.getElementById("styleButton");
+
+        styleButton.addEventListener("click", function () {
+            bookName.classList.toggle("highlight");
+
+            console.log("目前是否套用 highlight："
+                + bookName.classList.contains("highlight"));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定文字編碼，避免繁體中文出現亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JavaScript 變數、資料型別與運算子練習</title>
+</head>
+<body>
+    <h1>JavaScript 變數、資料型別與運算子練習</h1>
+
+    <p>請開啟瀏覽器開發者工具，查看 Console 的執行結果。</p>
+
+    <script>
+        // 一、使用 const 與 let 宣告變數
+        const bookName = "C# 入門教學";
+        let bookPrice = 350;
+
+        console.log("書名：", bookName);
+        console.log("原始價格：", bookPrice);
+
+        // let 宣告的變數可以重新指定值
+        bookPrice = 400;
+        console.log("更新後價格：", bookPrice);
+
+        // const 宣告的變數不能重新指定值
+        // bookName = "SQL Server 基礎"; // 取消註解會造成錯誤
+
+        // 二、常見資料型別
+        const title = "JavaScript 入門"; // String：字串
+        const quantity = 3;              // Number：數字
+        const isAvailable = true;        // Boolean：布林值
+        const selectedBook = null;       // Null：刻意設定為空值
+        let author;                      // Undefined：尚未指定值
+
+        console.log("書名：", title);
+        console.log("數量：", quantity);
+        console.log("是否可借閱：", isAvailable);
+        console.log("選取的書籍：", selectedBook);
+        console.log("作者：", author);
+
+        // typeof 可以查看資料的型別
+        console.log("title 的型別：", typeof title);
+        console.log("quantity 的型別：", typeof quantity);
+        console.log("isAvailable 的型別：", typeof isAvailable);
+
+        // 三、算術運算子
+        const price = 200;
+        const bookCount = 3;
+
+        console.log("總價：", price * bookCount);
+        console.log("加法：", 10 + 5);
+        console.log("減法：", 10 - 5);
+        console.log("乘法：", 10 * 5);
+        console.log("除法：", 10 / 5);
+        console.log("取餘數：", 10 % 3);
+
+        // 四、比較運算子：結果通常是 true 或 false
+        console.log("10 大於 5：", 10 > 5);
+        console.log("10 等於 10：", 10 === 10);
+        console.log("10 不等於 5：", 10 !== 5);
+
+        // === 會比較值與型別，通常優先使用
+        console.log("數字 5 等於字串 5：", 5 === "5");
+
+        // 五、字串串接
+        const firstName = "王";
+        const lastName = "小明";
+
+        console.log("作者姓名：" + firstName + lastName);
+
+        // 六、範本字串：使用反引號與 ${} 插入變數
+        const book = "HTML 與 CSS 入門";
+        const authorName = "林小美";
+
+        console.log(`書名：${book}，作者：${authorName}`);
+
+        // 七、更新變數的簡寫運算子
+        let totalBooks = 5;
+
+        totalBooks += 2; // 等同於 totalBooks = totalBooks + 2
+        console.log("增加後的書籍數量：", totalBooks);
+
+        totalBooks -= 1; // 等同於 totalBooks = totalBooks - 1
+        console.log("減少後的書籍數量：", totalBooks);
+    </script>
+</body>
+</html>

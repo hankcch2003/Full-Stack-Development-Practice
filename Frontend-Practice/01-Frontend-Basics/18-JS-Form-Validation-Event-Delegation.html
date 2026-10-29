@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 表單驗證與事件委派練習</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            margin: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 24px;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        section {
+            margin-top: 24px;
+            padding: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        label {
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        input, select {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 400px;
+            padding: 9px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 9px 14px;
+            margin: 8px 4px 4px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #2878c8;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #185a96;
+        }
+
+        .delete-button {
+            background-color: #c62828;
+        }
+
+        .delete-button:hover {
+            background-color: #991b1b;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #eef5ff;
+        }
+
+        .error {
+            color: #c62828;
+        }
+
+        .success {
+            color: #16803c;
+        }
+
+        .book-list {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .book-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #eef5ff;
+            border-radius: 6px;
+        }
+
+        .book-info {
+            overflow-wrap: anywhere;
+        }
+
+        .empty-message {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript 表單驗證與事件委派練習</h1>
+        <p>練習驗證圖書資料，並透過事件委派管理清單。</p>
+
+        <section>
+            <h2>新增圖書</h2>
+
+            <form id="bookForm" novalidate>
+                <label for="bookTitle">圖書名稱：</label><br>
+                <input
+                    type="text"
+                    id="bookTitle"
+                    placeholder="請輸入圖書名稱"
+                >
+
+                <br>
+
+                <label for="bookAuthor">作者：</label><br>
+                <input
+                    type="text"
+                    id="bookAuthor"
+                    placeholder="請輸入作者名稱"
+                >
+
+                <br>
+
+                <label for="bookCategory">圖書分類：</label><br>
+                <select id="bookCategory">
+                    <option value="">請選擇分類</option>
+                    <option value="程式設計">程式設計</option>
+                    <option value="資料庫">資料庫</option>
+                    <option value="網頁設計">網頁設計</option>
+                    <option value="其他">其他</option>
+                </select>
+
+                <br>
+
+                <button type="submit">新增圖書</button>
+                <button type="reset">清除表單</button>
+            </form>
+
+            <p id="formMessage" class="message">
+                請填寫完整資料後新增。
+            </p>
+        </section>
+
+        <section>
+            <h2>圖書清單</h2>
+            <p>目前圖書數量：<span id="bookCount">0</span></p>
+
+            <ul id="bookList" class="book-list">
+                <li class="empty-message">目前沒有圖書資料。</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        // 取得頁面元素
+        const bookForm = document.getElementById("bookForm");
+        const bookTitle = document.getElementById("bookTitle");
+        const bookAuthor = document.getElementById("bookAuthor");
+        const bookCategory = document.getElementById("bookCategory");
+        const formMessage = document.getElementById("formMessage");
+        const bookList = document.getElementById("bookList");
+        const bookCount = document.getElementById("bookCount");
+
+        // 更新清單數量與空清單提示
+        function updateBookList() {
+            const books = bookList.querySelectorAll(".book-item");
+
+            bookCount.textContent = books.length;
+
+            const emptyMessage = bookList.querySelector(".empty-message");
+
+            if (books.length === 0) {
+                if (!emptyMessage) {
+                    const message = document.createElement("li");
+                    message.className = "empty-message";
+                    message.textContent = "目前沒有圖書資料。";
+                    bookList.appendChild(message);
+                }
+            } else if (emptyMessage) {
+                emptyMessage.remove();
+            }
+        }
+
+        // 建立圖書清單項目
+        function createBookItem(title, author, category) {
+            const listItem = document.createElement("li");
+            listItem.className = "book-item";
+
+            const bookInfo = document.createElement("div");
+            bookInfo.className = "book-info";
+
+            const titleElement = document.createElement("strong");
+            titleElement.textContent = title;
+
+            const authorElement = document.createElement("p");
+            authorElement.textContent = "作者：" + author;
+
+            const categoryElement = document.createElement("p");
+            categoryElement.textContent = "分類：" + category;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "delete-button";
+            deleteButton.textContent = "刪除";
+
+            bookInfo.append(titleElement, authorElement, categoryElement);
+            listItem.append(bookInfo, deleteButton);
+
+            return listItem;
+        }
+
+        // 顯示表單訊息
+        function showMessage(message, type) {
+            formMessage.textContent = message;
+            formMessage.className = "message " + type;
+        }
+
+        // 表單提交與資料驗證
+        bookForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const title = bookTitle.value.trim();
+            const author = bookAuthor.value.trim();
+            const category = bookCategory.value;
+
+            // 檢查必填欄位
+            if (title === "" || author === "" || category === "") {
+                showMessage("請完整填寫圖書名稱、作者與分類。", "error");
+                return;
+            }
+
+            // 將資料加入清單
+            const listItem = createBookItem(title, author, category);
+            bookList.appendChild(listItem);
+
+            updateBookList();
+
+            showMessage("新增成功：" + title, "success");
+
+            bookForm.reset();
+            bookTitle.focus();
+        });
+
+        // 表單重設時更新提示訊息
+        bookForm.addEventListener("reset", function () {
+            showMessage("表單已清除。", "");
+        });
+
+        // 事件委派：統一處理所有圖書的刪除
+        bookList.addEventListener("click", function (event) {
+            const deleteButton = event.target.closest(".delete-button");
+
+            if (!deleteButton || !bookList.contains(deleteButton)) {
+                return;
+            }
+
+            const listItem = deleteButton.closest(".book-item");
+
+            if (!listItem) {
+                return;
+            }
+
+            const title = listItem.querySelector("strong").textContent;
+
+            listItem.remove();
+            updateBookList();
+
+            showMessage("已刪除圖書：" + title, "success");
+        });
+
+        // 初始化清單
+        updateBookList();
+    </script>
+</body>
+</html>

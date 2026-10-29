@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 圖書表單與元件</title>
+
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background-color: #f5f7fa;
+        }
+
+        .panel {
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-field input,
+        .form-field select {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #198754;
+            color: white;
+            cursor: pointer;
+        }
+
+        .secondary-button {
+            background-color: #6c757d;
+        }
+
+        .edit-button {
+            background-color: #0d6efd;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .book-card {
+            padding: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .book-card h3 {
+            margin-top: 0;
+        }
+
+        .book-card p {
+            color: #555;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            background-color: #e8f5e9;
+        }
+
+        .error {
+            color: #b02a37;
+            background-color: #f8d7da;
+        }
+
+        .empty-message {
+            color: #666;
+            padding: 12px 0;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main id="app">
+        <section class="panel">
+            <h1>圖書資料管理</h1>
+
+            <p>
+                練習 Vue 3 表單綁定、表單驗證與元件溝通。
+            </p>
+
+            <p
+                class="status"
+                :class="{ error: hasError }"
+                role="status"
+                aria-live="polite"
+            >
+                {{ statusMessage }}
+            </p>
+
+            <h2>{{ editingId === null ? "新增圖書" : "編輯圖書" }}</h2>
+
+            <form @submit.prevent="saveBook">
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="bookTitle">圖書名稱</label>
+                        <input
+                            id="bookTitle"
+                            v-model.trim="form.title"
+                            type="text"
+                            maxlength="100"
+                            required
+                            placeholder="例如：C# 程式設計入門"
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="bookAuthor">作者</label>
+                        <input
+                            id="bookAuthor"
+                            v-model.trim="form.author"
+                            type="text"
+                            maxlength="60"
+                            required
+                            placeholder="請輸入作者"
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="bookCategory">分類</label>
+                        <select id="bookCategory" v-model="form.category">
+                            <option value="程式設計">程式設計</option>
+                            <option value="資料庫">資料庫</option>
+                            <option value="網頁開發">網頁開發</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="bookYear">出版年份</label>
+                        <input
+                            id="bookYear"
+                            v-model.number="form.year"
+                            type="number"
+                            min="1900"
+                            max="2100"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <button type="submit">
+                        {{ editingId === null ? "新增圖書" : "儲存修改" }}
+                    </button>
+
+                    <button
+                        v-if="editingId !== null"
+                        type="button"
+                        class="secondary-button"
+                        @click="resetForm"
+                    >
+                        取消編輯
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>圖書清單</h2>
+
+            <p>目前共有 {{ books.length }} 本圖書。</p>
+
+            <div v-if="books.length > 0" class="book-list">
+                <book-card
+                    v-for="book in books"
+                    :key="book.id"
+                    :book="book"
+                    @edit="editBook"
+                    @delete="deleteBook"
+                ></book-card>
+            </div>
+
+            <p v-else class="empty-message">
+                目前沒有圖書，請使用上方表單新增。
+            </p>
+
+            <div class="toolbar">
+                <button
+                    type="button"
+                    class="secondary-button"
+                    @click="restoreBooks"
+                >
+                    恢復範例資料
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        // 子元件只負責顯示圖書，透過 emit 通知父元件操作。
+        const BookCard = {
+            props: {
+                book: {
+                    type: Object,
+                    required: true
+                }
+            },
+
+            emits: ["edit", "delete"],
+
+            template: `
+                <article class="book-card">
+                    <h3>{{ book.title }}</h3>
+                    <p>作者：{{ book.author }}</p>
+                    <p>分類：{{ book.category }}</p>
+                    <p>出版年份：{{ book.year }}</p>
+
+                    <div class="card-actions">
+                        <button
+                            type="button"
+                            class="edit-button"
+                            @click="$emit('edit', book.id)"
+                        >
+                            編輯
+                        </button>
+
+                        <button
+                            type="button"
+                            class="delete-button"
+                            @click="$emit('delete', book.id)"
+                        >
+                            刪除
+                        </button>
+                    </div>
+                </article>
+            `
+        };
+
+        createApp({
+            components: {
+                BookCard
+            },
+
+            setup() {
+                const initialBooks = [
+                    {
+                        id: 1,
+                        title: "C# 程式設計入門",
+                        author: "王小明",
+                        category: "程式設計",
+                        year: 2024
+                    },
+                    {
+                        id: 2,
+                        title: "JavaScript 網頁開發",
+                        author: "陳小華",
+                        category: "網頁開發",
+                        year: 2023
+                    },
+                    {
+                        id: 3,
+                        title: "SQL Server 資料庫實務",
+                        author: "林小美",
+                        category: "資料庫",
+                        year: 2025
+                    }
+                ];
+
+                const books = ref([]);
+                const editingId = ref(null);
+                const statusMessage = ref("圖書資料已準備完成。");
+                const hasError = ref(false);
+
+                const createEmptyForm = () => ({
+                    title: "",
+                    author: "",
+                    category: "程式設計",
+                    year: new Date().getFullYear()
+                });
+
+                const form = ref(createEmptyForm());
+
+                function resetForm() {
+                    form.value = createEmptyForm();
+                    editingId.value = null;
+                    hasError.value = false;
+                    statusMessage.value = "表單已清除。";
+                }
+
+                function saveBook() {
+                    const title = form.value.title.trim();
+                    const author = form.value.author.trim();
+                    const year = Number(form.value.year);
+
+                    if (!title || !author) {
+                        hasError.value = true;
+                        statusMessage.value = "請輸入圖書名稱與作者。";
+                        return;
+                    }
+
+                    if (!Number.isInteger(year) || year < 1900 || year > 2100) {
+                        hasError.value = true;
+                        statusMessage.value = "出版年份必須介於 1900 至 2100。";
+                        return;
+                    }
+
+                    const bookData = {
+                        title,
+                        author,
+                        category: form.value.category,
+                        year
+                    };
+
+                    if (editingId.value === null) {
+                        const nextId = books.value.length > 0
+                            ? Math.max(...books.value.map((book) => book.id)) + 1
+                            : 1;
+
+                        books.value.push({
+                            id: nextId,
+                            ...bookData
+                        });
+
+                        statusMessage.value = `已新增圖書：${title}`;
+                    } else {
+                        const index = books.value.findIndex(
+                            (book) => book.id === editingId.value
+                        );
+
+                        if (index !== -1) {
+                            books.value[index] = {
+                                id: editingId.value,
+                                ...bookData
+                            };
+
+                            statusMessage.value = `已更新圖書：${title}`;
+                        }
+                    }
+
+                    resetForm();
+                }
+
+                function editBook(id) {
+                    const book = books.value.find((item) => item.id === id);
+
+                    if (!book) {
+                        hasError.value = true;
+                        statusMessage.value = "找不到要編輯的圖書。";
+                        return;
+                    }
+
+                    form.value = {
+                        title: book.title,
+                        author: book.author,
+                        category: book.category,
+                        year: book.year
+                    };
+
+                    editingId.value = book.id;
+                    hasError.value = false;
+                    statusMessage.value = `正在編輯：${book.title}`;
+
+                    document.querySelector("#bookTitle").focus();
+                }
+
+                function deleteBook(id) {
+                    const book = books.value.find((item) => item.id === id);
+
+                    if (!book) {
+                        return;
+                    }
+
+                    books.value = books.value.filter(
+                        (item) => item.id !== id
+                    );
+
+                    if (editingId.value === id) {
+                        resetForm();
+                    }
+
+                    hasError.value = false;
+                    statusMessage.value = `已刪除圖書：${book.title}`;
+                }
+
+                function restoreBooks() {
+                    books.value = initialBooks.map((book) => ({
+                        ...book
+                    }));
+
+                    resetForm();
+                    statusMessage.value = "已恢復三本範例圖書。";
+                }
+
+                restoreBooks();
+
+                return {
+                    books,
+                    form,
+                    editingId,
+                    statusMessage,
+                    hasError,
+                    saveBook,
+                    editBook,
+                    deleteBook,
+                    resetForm,
+                    restoreBooks
+                };
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

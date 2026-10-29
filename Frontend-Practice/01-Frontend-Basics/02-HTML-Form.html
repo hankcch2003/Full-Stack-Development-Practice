@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 設定網頁文字編碼，避免中文亂碼 -->
+    <meta charset="UTF-8">
+
+    <!-- 讓網頁能適應手機及電腦螢幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 設定瀏覽器分頁標題 -->
+    <title>會員資料表單</title>
+</head>
+<body>
+    <h1>會員資料表單</h1>
+
+    <!-- form 用來建立表單，submit 按鈕會送出表單 -->
+    <form>
+        <!-- label 是欄位標籤，for 要對應輸入欄位的 id -->
+        <p>
+            <label for="name">姓名：</label>
+            <!-- type="text" 代表一般文字輸入欄位 -->
+            <input type="text" id="name" name="name" required>
+        </p>
+
+        <p>
+            <label for="email">電子郵件：</label>
+            <!-- type="email" 會進行基本的電子郵件格式驗證 -->
+            <input type="email" id="email" name="email" required>
+        </p>
+
+        <p>
+            <label for="password">密碼：</label>
+            <!-- type="password" 會將輸入內容隱藏顯示 -->
+            <input type="password" id="password" name="password" required>
+        </p>
+
+        <p>
+            <label for="gender">性別：</label>
+            <!-- select 建立下拉選單，option 是選項 -->
+            <select id="gender" name="gender">
+                <option value="male">男</option>
+                <option value="female">女</option>
+                <option value="other">其他</option>
+            </select>
+        </p>
+
+        <p>
+            <!-- checkbox 是核取方塊，可勾選或取消 -->
+            <input type="checkbox" id="agree" name="agree" required>
+            <label for="agree">我同意相關使用條款</label>
+        </p>
+
+        <!-- submit 會嘗試送出表單；reset 會清除目前輸入內容 -->
+        <button type="submit">送出表單</button>
+        <button type="reset">清除資料</button>
+    </form>
+</body>
+</html>

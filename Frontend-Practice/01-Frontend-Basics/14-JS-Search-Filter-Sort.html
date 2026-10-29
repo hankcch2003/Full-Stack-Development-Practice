@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 陣列搜尋、篩選與排序練習</title>
+</head>
+<body>
+    <h1>JavaScript 陣列搜尋、篩選與排序練習</h1>
+    <p>請按 F12 開啟開發者工具，查看 Console 輸出。</p>
+
+    <script>
+        // 一、建立書籍資料
+        const books = [
+            { id: 1, title: "C# 入門教學", author: "王小明", price: 350, stock: 5 },
+            { id: 2, title: "JavaScript 入門", author: "陳小華", price: 450, stock: 0 },
+            { id: 3, title: "SQL Server 實戰", author: "林小美", price: 550, stock: 8 },
+            { id: 4, title: "HTML 與 CSS", author: "王小明", price: 250, stock: 3 },
+            { id: 5, title: "ASP.NET Core 開發", author: "張小安", price: 650, stock: 2 }
+        ];
+
+        console.log("=== 原始書籍清單 ===");
+        books.forEach(function (book) {
+            console.log(book.id + ". " + book.title + "，價格：" + book.price);
+        });
+
+        // 二、find：尋找第一筆符合條件的資料
+        console.log("=== 查詢指定編號 ===");
+
+        const targetBook = books.find(function (book) {
+            return book.id === 3;
+        });
+
+        console.log(targetBook);
+
+        // 查詢不存在的編號
+        const missingBook = books.find(function (book) {
+            return book.id === 99;
+        });
+
+        console.log("不存在的書籍：" + missingBook);
+
+        // 三、filter：依照書名關鍵字搜尋
+        console.log("=== 搜尋 JavaScript ===");
+
+        const keyword = "JavaScript";
+
+        const searchResults = books.filter(function (book) {
+            return book.title.toLowerCase().includes(keyword.toLowerCase());
+        });
+
+        console.log(searchResults);
+
+        // 四、filter：篩選價格 400 以上的書籍
+        console.log("=== 價格 400 以上 ===");
+
+        const expensiveBooks = books.filter(function (book) {
+            return book.price >= 400;
+        });
+
+        expensiveBooks.forEach(function (book) {
+            console.log(book.title + "：" + book.price);
+        });
+
+        // 五、filter：篩選有庫存的書籍
+        console.log("=== 有庫存的書籍 ===");
+
+        const availableBooks = books.filter(function (book) {
+            return book.stock > 0;
+        });
+
+        availableBooks.forEach(function (book) {
+            console.log(book.title + "，庫存：" + book.stock);
+        });
+
+        // 六、some：判斷是否有任何書籍價格超過 600
+        console.log("=== some ===");
+
+        const hasExpensiveBook = books.some(function (book) {
+            return book.price > 600;
+        });
+
+        console.log("是否有價格超過 600 的書籍：" + hasExpensiveBook);
+
+        // 七、every：判斷所有書籍是否都有價格
+        console.log("=== every ===");
+
+        const allHavePrice = books.every(function (book) {
+            return book.price > 0;
+        });
+
+        console.log("所有書籍價格是否都大於 0：" + allHavePrice);
+
+        // 八、sort：依價格由低到高排序
+        // 使用複製陣列，避免改變原始書籍順序
+        const sortedByPrice = [...books].sort(function (a, b) {
+            return a.price - b.price;
+        });
+
+        console.log("=== 價格由低到高 ===");
+
+        sortedByPrice.forEach(function (book) {
+            console.log(book.title + "：" + book.price);
+        });
+
+        // 九、sort：依價格由高到低排序
+        const sortedByHighPrice = [...books].sort(function (a, b) {
+            return b.price - a.price;
+        });
+
+        console.log("=== 價格由高到低 ===");
+
+        sortedByHighPrice.forEach(function (book) {
+            console.log(book.title + "：" + book.price);
+        });
+
+        // 十、sort：依書名排序
+        const sortedByTitle = [...books].sort(function (a, b) {
+            return a.title.localeCompare(b.title, "zh-Hant");
+        });
+
+        console.log("=== 依書名排序 ===");
+
+        sortedByTitle.forEach(function (book) {
+            console.log(book.title);
+        });
+
+        // 十一、map：只取得所有書名
+        console.log("=== 所有書名 ===");
+
+        const bookTitles = books.map(function (book) {
+            return book.title;
+        });
+
+        console.log(bookTitles);
+
+        // 十二、reduce：計算所有書籍的總價
+        console.log("=== 總價計算 ===");
+
+        const totalPrice = books.reduce(function (total, book) {
+            return total + book.price;
+        }, 0);
+
+        console.log("全部書籍總價：" + totalPrice);
+
+        // 十三、組合條件：搜尋價格不超過 500 且有庫存的書籍
+        console.log("=== 價格不超過 500 且有庫存 ===");
+
+        const recommendedBooks = books.filter(function (book) {
+            return book.price <= 500 && book.stock > 0;
+        });
+
+        recommendedBooks.forEach(function (book) {
+            console.log(book.title + "，價格：" + book.price);
+        });
+    </script>
+</body>
+</html>
