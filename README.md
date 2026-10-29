@@ -1,6 +1,6 @@
-# Full-Stack Development Practice
+# Full-Stack Development Practice (全端開發練習作品集)
 
-C#、ASP.NET Core Web API、SQL Server 與前端網頁開發練習作品集。
+C#、ASP.NET Core Web API、SQL Server 與前端網頁開發的學習與實作紀錄。
 
 ## 專案簡介
 
